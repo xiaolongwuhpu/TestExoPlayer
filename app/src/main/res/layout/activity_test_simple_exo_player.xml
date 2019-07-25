@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".TestMergeMediaSouce">
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/exo_play"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+    app:controller_layout_id="@layout/cus_exo_playback_control_view"
+        />
+    <com.google.android.exoplayer2.ui.PlayerControlView
+        android:id="@+id/cus_control_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:repeat_toggle_modes="all|one"
+        app:show_timeout="10000" />
+</LinearLayout>

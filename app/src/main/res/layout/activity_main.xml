@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/exo_play"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <Button
+        android:layout_marginTop="15dp"
+        android:id="@+id/example_exo_player"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/button_bg"
+        android:text="simple_player"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/merge"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/button_bg"
+        android:text="merge"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/tv"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/button_bg"
+        android:text="watch TV"
+        android:textColor="@color/white" />
+</LinearLayout>

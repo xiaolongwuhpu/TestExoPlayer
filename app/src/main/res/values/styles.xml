@@ -1,0 +1,38 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style name="ExoMediaButton.cusNext">
+        <item name="android:height">50dp</item>
+        <item name="android:width">70dp</item>
+        <item name="android:text">下一个</item>
+        <!--<item name="android:src">@drawable/exo_controls_previous</item>-->
+        <!--<item name="android:contentDescription">@string/exo_controls_previous_description</item>-->
+    </style>
+
+    <style name="ExoMediaButton.cusPrevious">
+        <item name="android:height">50dp</item>
+        <item name="android:width">70dp</item>
+        <item name="android:text">上一个</item>
+        <!--<item name="android:src">@drawable/exo_controls_previous</item>-->
+        <!--<item name="android:contentDescription">@string/exo_controls_previous_description</item>-->
+    </style>
+
+</resources>
