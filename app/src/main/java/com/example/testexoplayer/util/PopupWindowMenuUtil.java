@@ -57,7 +57,7 @@ public class PopupWindowMenuUtil {
         initAdapter(list, mOnListItemClickLitener);
         initRecyclerView();
 
-        popupWindow = new PopupWindow(popupWindowView, 320, ViewGroup.LayoutParams.MATCH_PARENT);
+        popupWindow = new PopupWindow(popupWindowView, 350, ViewGroup.LayoutParams.MATCH_PARENT);
 
         popupWindow.setTouchable(true);//设置可以触摸
         popupWindow.setFocusable(true);//代表可以允许获取焦点的，如果有输入框的话，可以聚焦
@@ -78,7 +78,7 @@ public class PopupWindowMenuUtil {
         // 如果不设置PopupWindow的背景，无论是点击外部区域还是Back键都无法dismiss弹框
         // 我觉得这里是API的一个bug
         //方式一
-        ColorDrawable dw = new ColorDrawable(0x60ffffff);//设置背景为透明
+        ColorDrawable dw = new ColorDrawable(0x88000000);//设置背景为透明
         popupWindow.setBackgroundDrawable(dw);
 
         //int xPos = - popupWindow.getWidth() / 2 + view.getWidth() / 2;//X轴的偏移值:xoff表示x轴的偏移，正值表示向右，负值表示向左；

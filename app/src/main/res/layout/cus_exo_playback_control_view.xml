@@ -19,7 +19,7 @@
   android:layout_height="wrap_content"
   android:layout_gravity="bottom"
   android:layoutDirection="ltr"
-  android:background="#CC000000"
+  android:background="#88000000"
   android:orientation="vertical"
   tools:targetApi="28">
 

@@ -6,21 +6,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.testexoplayer.data.ConstantData;
 import com.example.testexoplayer.util.ToNewPageUtil;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.MergingMediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
 
 import java.io.Serializable;
 import java.util.List;
@@ -28,7 +26,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.example.testexoplayer.data.ConstantData.H264_MANIFEST;
 import static com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL;
 
 
@@ -62,13 +59,12 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initData() {
         playView.setResizeMode(RESIZE_MODE_FILL);
-
-//      player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(this),new DefaultTrackSelector(), new DefaultLoadControl());
+//      player = ExoPlayerFactory.newSimpleInstance(this,new DefaultRenderersFactory(this),new DefaultTrackSelector(), new DefaultLoadControl());
         player = ExoPlayerFactory.newSimpleInstance(this);
 
         playView.setPlayer(player);
 
-        mediaSource2 = ConstantData.buildMediaSource(Uri.parse(ConstantData.SmoothStreaming_ism01), this);
+        mediaSource2 = ConstantData.buildMediaSource(Uri.parse(ConstantData.MP4url), this);
 //        mediaSource2 = ConstantData.buildOkHttpMediaSource(Uri.parse(ConstantData.wuxing_m3u8), this);
 //        LoopingMediaSource firstSourceTwice = new LoopingMediaSource(mediaSource, 1);
 //        concatenatedSource = new ConcatenatingMediaSource(mediaSource, mediaSource2);

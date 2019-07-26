@@ -78,10 +78,8 @@ DefaultTrackSelector trackSelection = new DefaultTrackSelector(factory);
 SimpleExoPlayer exoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelection);
 
 // 第二种方式 传入了默认的渲染工厂（DefaultRenderersFactory），默认的轨道选择器（DefaultTrackSelector）和默认的加载控制器（DefaultLoadControl），然后把返回的播放器实例
-SimpleExoPlayer player = ExoPlayerFactory.newSimpleInstance(
-         new DefaultRenderersFactory(context),
-         new DefaultTrackSelector(), 
-         new DefaultLoadControl());
+player = ExoPlayerFactory.newSimpleInstance(this,new DefaultRenderersFactory(this),new DefaultTrackSelector(), new DefaultLoadControl());
+    
 ```
 
 #### 2.准备并开始播放
@@ -123,9 +121,22 @@ MediaSource source = new ConcatenatingMediaSource(mediaSources);
 MediaSource mediaSource = new LoopingMediaSource(source, loopCount);
 ```
 
-```
+ExoPlayer相比Android的MediaPlayer的主要优点之一是可以自定义和扩展播放器，以更好地适应开发人员的使用情况。 ExoPlayer库专为此设计的，定义了许多接口和抽象基类，使应用程序开发人员可以轻松地替换库提供的默认实现。
 
+#### （1）构建自定义组件:
 
-ExoPlayer库提供了
-```
+- Renderer - 可能想要实现自定义渲染器来处理媒体类型，该类型不受库提供的默认实现支持。
+- TrackSelector - 实现自定义TrackSelector，允许应用程序开发人员更改由每个可用Renderer选择供MediaSource公开的轨道的方式。
+- LoadControl - 实现自定义的LoadControl允许应用程序开发人员更改播放器的缓冲策略。
+- Extractor - 如果需要支持当前不支持的容器格式，请考虑实现一个自定义Extractor类，然后可以将它与ExtractorMediaSource一起用于播放该类型的媒体。
+- MediaSource - 如果希望以自定义的方式获取媒体示例以供给呈现器，或者如果希望实现自定义MediaSource合成行为，则实现自定义MediaSource类可能是合适的。
+- DataSource - ExoPlayer的上游软件包已经包含了许多用于不同用例的DataSource实现。可能希望实现自己的DataSource类以另一种方式加载数据，例如通过自定义协议，使用自定义HTTP堆栈或从自定义持久性高速缓存中加载数据。
 
+#### （2）定制指南
+
+- 如果自定义组件需要将事件报告回应用程序，我们建议使用与现有ExoPlayer组件相同的模型，将事件监听器与Handler一起传递给组件的构造函数。
+- 我们建议自定义组件使用与现有ExoPlayer组件相同的模型，以便在回放时允许应用程序重新配置，如 第七条中的 将消息发送到组件 所描述的那样。 为此，应该实现一个ExoPlayerComponent并在其handleMessage方法中接收配置更改。 的应用程序应通过调用ExoPlayer的sendMessages和blockingSendMessages方法来传递配置更改。
+
+### 音频倍速播放
+
+音频缓存

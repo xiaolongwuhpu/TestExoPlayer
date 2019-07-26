@@ -74,8 +74,10 @@ public class TestSimpleExoPlayer extends BaseActivity {
                         print(event.toString());
                         if (showing) {
                             dissmissMenu();
+                            playView.hideController();
                         } else {
                             showMenu();
+                            playView.showController();
                         }
                         showing = !showing;
                         break;
