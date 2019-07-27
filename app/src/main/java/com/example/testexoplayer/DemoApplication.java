@@ -63,7 +63,7 @@ public class DemoApplication extends Application {
   @Override
   public void onCreate() {
     super.onCreate();
-    userAgent = Util.getUserAgent(this, "ExoPlayerDemo");
+    userAgent = Util.getUserAgent(this, getString(R.string.app_name));
   }
 
   /** Returns a {@link DataSource.Factory}. */

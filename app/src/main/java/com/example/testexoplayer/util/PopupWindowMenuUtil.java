@@ -57,7 +57,7 @@ public class PopupWindowMenuUtil {
         initAdapter(list, mOnListItemClickLitener);
         initRecyclerView();
 
-        popupWindow = new PopupWindow(popupWindowView, 350, ViewGroup.LayoutParams.MATCH_PARENT);
+        popupWindow = new PopupWindow(popupWindowView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         popupWindow.setTouchable(true);//设置可以触摸
         popupWindow.setFocusable(true);//代表可以允许获取焦点的，如果有输入框的话，可以聚焦

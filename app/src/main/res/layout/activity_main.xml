@@ -15,12 +15,12 @@
 
     <Button
         android:layout_marginTop="15dp"
-        android:id="@+id/example_exo_player"
+        android:id="@+id/media_codec"
         android:layout_width="120dp"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/button_bg"
-        android:text="simple_player"
+        android:text="mediaCodec播放器"
         android:textColor="@color/white" />
 
     <Button

@@ -16,6 +16,8 @@
         android:textStyle="bold"
         android:textSize="15sp"
         android:padding="5dp"
+        android:lines="1"
+        android:ellipsize="end"
         android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

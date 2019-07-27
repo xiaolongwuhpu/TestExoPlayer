@@ -29,8 +29,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     private boolean isShowTitle = true;
     //是否显示状态栏
     private boolean isShowStatusBar = true;
-    //是否允许旋转屏幕
-    private boolean isAllowScreenRoate = true;
     //封装Toast对象
     private static Toast toast;
     public Context context;
@@ -46,7 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
 
-        if (isShowStatusBar) {
+        if (!isShowStatusBar) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
                     , WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
@@ -57,12 +55,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         instance = ScreenSwitchUtils.init(this.getApplicationContext());
 
         ButterKnife.bind(this);
-        //设置屏幕是否可旋转
-//        if (!isAllowScreenRoate) {
-//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//        } else {
-//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//        }
         //初始化控件
         initView();
         //设置数据
@@ -102,15 +94,6 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     public void setShowStatusBar(boolean showStatusBar) {
         isShowStatusBar = showStatusBar;
-    }
-
-    /**
-     * 是否允许屏幕旋转
-     *
-     * @param allowScreenRoate true or false
-     */
-    public void setAllowScreenRoate(boolean allowScreenRoate) {
-        isAllowScreenRoate = allowScreenRoate;
     }
 
     /**

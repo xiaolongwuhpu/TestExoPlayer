@@ -3,6 +3,7 @@ package com.example.testexoplayer.data;
 import android.content.Context;
 import android.net.Uri;
 
+import com.example.testexoplayer.DemoApplication;
 import com.example.testexoplayer.R;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -45,7 +46,8 @@ public class ConstantData {
 
     public static String localtvs=  "asset:///cctvs.m3u";
 
-//    public static String  rawVidow =  "rawresource:///"+R.raw.video
+//    public static String  rawVidow =  "rawresource:///"+R.raw.beach;
+//     public static String rawPath = "android.resource://" ;//+ DemoApplication.getPackageName() + "/" + R.raw.video;
 
 
     private static final String BASE_URL =

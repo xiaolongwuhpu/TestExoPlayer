@@ -8,16 +8,14 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.testexoplayer.data.ConstantData;
+import com.example.testexoplayer.mediacodec.TestMediaCodec;
 import com.example.testexoplayer.util.ToNewPageUtil;
-import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 
 import java.io.Serializable;
@@ -33,7 +31,7 @@ public class MainActivity extends BaseActivity {
     SimpleExoPlayer player;
     PlayerView playView;
     MediaSource mediaSource, mediaSource2;
-    @BindView(R.id.example_exo_player)
+    @BindView(R.id.media_codec)
     Button exampleExoPlayer;
     @BindView(R.id.merge)
     Button merge;
@@ -115,11 +113,11 @@ public class MainActivity extends BaseActivity {
     };
 
 
-    @OnClick({R.id.example_exo_player, R.id.merge, R.id.tv})
+    @OnClick({R.id.media_codec, R.id.merge, R.id.tv})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.example_exo_player:
-                ToNewPageUtil.intentToActivity(this, TestSimpleExoPlayer.class);
+            case R.id.media_codec:
+                ToNewPageUtil.intentToActivity(this, TestMediaCodec.class);
                 break;
             case R.id.merge:
                 ToNewPageUtil.intentToActivity(this, TestMergeMediaSouce.class);
