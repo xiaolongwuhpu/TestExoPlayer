@@ -14,7 +14,6 @@ import java.nio.ByteBuffer;
 
 public class MediaCodecPlayer {
     private static final String TAG = "Player";
-    private static final boolean VERBOSE = false;
     private static final long TIMEOUT_US = 10000;
 
     private IPlayStateListener mListener;
@@ -37,6 +36,7 @@ public class MediaCodecPlayer {
 
     /**
      * 设置回调
+     *
      * @param mListener
      */
     public void setPlayStateListener(IPlayStateListener mListener) {
@@ -45,6 +45,7 @@ public class MediaCodecPlayer {
 
     /**
      * 是否处于播放状态
+     *
      * @return
      */
     public boolean isPlaying() {
@@ -102,6 +103,7 @@ public class MediaCodecPlayer {
 
     /**
      * 解复用，得到需要解码的数据
+     *
      * @param extractor
      * @param decoder
      * @param inputBuffers
@@ -116,9 +118,7 @@ public class MediaCodecPlayer {
             if (sampleSize < 0) {
                 decoder.queueInputBuffer(inputBufferIndex, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
                 isMediaEOS = true;
-                if (VERBOSE) {
-                    Log.d(TAG, "end of stream");
-                }
+                Log.d(TAG, "end of stream");
             } else {
                 decoder.queueInputBuffer(inputBufferIndex, 0, sampleSize, extractor.getSampleTime(), 0);
                 extractor.advance();
@@ -129,6 +129,7 @@ public class MediaCodecPlayer {
 
     /**
      * 解码延时
+     *
      * @param bufferInfo
      * @param startMillis
      */
@@ -145,6 +146,7 @@ public class MediaCodecPlayer {
 
     /**
      * 获取媒体类型的轨道
+     *
      * @param extractor
      * @param mediaType
      * @return
@@ -154,6 +156,7 @@ public class MediaCodecPlayer {
         for (int i = 0; i < extractor.getTrackCount(); i++) {
             MediaFormat mediaFormat = extractor.getTrackFormat(i);
             String mime = mediaFormat.getString(MediaFormat.KEY_MIME);
+            Log.e(TAG, "index=" + i + " , mime=" + mime + " , mediaType=" + mediaType);
             if (mime.startsWith(mediaType)) {
                 trackIndex = i;
                 break;
@@ -178,14 +181,14 @@ public class MediaCodecPlayer {
             int videoTrackIndex;
             // 获取视频所在轨道
             videoTrackIndex = getTrackIndex(videoExtractor, "video/");
+            int width = 0;
+            int height = 0;
+            long time = 0;
             if (videoTrackIndex >= 0) {
                 MediaFormat mediaFormat = videoExtractor.getTrackFormat(videoTrackIndex);
-                int width = mediaFormat.getInteger(MediaFormat.KEY_WIDTH);
-                int height = mediaFormat.getInteger(MediaFormat.KEY_HEIGHT);
-                float time = mediaFormat.getLong(MediaFormat.KEY_DURATION) / 1000000;
-                if (mListener != null) {
-                    mListener.videoAspect(width, height, time);
-                }
+                width = mediaFormat.getInteger(MediaFormat.KEY_WIDTH);
+                height = mediaFormat.getInteger(MediaFormat.KEY_HEIGHT);
+                time = mediaFormat.getLong(MediaFormat.KEY_DURATION) / 1000000;
                 videoExtractor.selectTrack(videoTrackIndex);
                 try {
                     videoCodec = MediaCodec.createDecoderByType(mediaFormat.getString(MediaFormat.KEY_MIME));
@@ -196,13 +199,15 @@ public class MediaCodecPlayer {
             }
 
             if (videoCodec == null) {
-                if (VERBOSE) {
-                    Log.d(TAG, "video decoder is unexpectedly null");
-                }
+                Log.d(TAG, "video decoder is unexpectedly null");
                 return;
             }
-
             videoCodec.start();
+            if (mListener != null) {
+                mListener.videoAspect(width, height, time);
+            }
+//            videoCodec.setVideoScalingMode(MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
+
             MediaCodec.BufferInfo videoBufferInfo = new MediaCodec.BufferInfo();
             ByteBuffer[] inputBuffers = videoCodec.getInputBuffers();
             boolean isVideoEOS = false;
@@ -221,21 +226,16 @@ public class MediaCodecPlayer {
                     }
                     // 获取解码后的数据
                     int outputBufferIndex = videoCodec.dequeueOutputBuffer(videoBufferInfo, TIMEOUT_US);
+                    Log.d(TAG, "outputBufferIndex="+outputBufferIndex);
                     switch (outputBufferIndex) {
                         case MediaCodec.INFO_OUTPUT_FORMAT_CHANGED:
-                            if (VERBOSE) {
-                                Log.d(TAG, "INFO_OUTPUT_FORMAT_CHANGED");
-                            }
+                            Log.d(TAG, "INFO_OUTPUT_FORMAT_CHANGED");
                             break;
                         case MediaCodec.INFO_TRY_AGAIN_LATER:
-                            if (VERBOSE) {
-                                Log.d(TAG, "INFO_TRY_AGAIN_LATER");
-                            }
+                            Log.d(TAG, "INFO_TRY_AGAIN_LATER");
                             break;
                         case MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED:
-                            if (VERBOSE) {
-                                Log.d(TAG, "INFO_OUTPUT_BUFFERS_CHANGED");
-                            }
+                            Log.d(TAG, "INFO_OUTPUT_BUFFERS_CHANGED");
                             break;
                         default:
                             // 延迟解码
@@ -274,6 +274,7 @@ public class MediaCodecPlayer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            Log.v(TAG, "audioExtractor.getTrackCount()="+audioExtractor.getTrackCount());
             for (int i = 0; i < audioExtractor.getTrackCount(); i++) {
                 MediaFormat mediaFormat = audioExtractor.getTrackFormat(i);
                 String mime = mediaFormat.getString(MediaFormat.KEY_MIME);
@@ -306,9 +307,7 @@ public class MediaCodecPlayer {
             }
 
             if (audioCodec == null) {
-                if (VERBOSE) {
-                    Log.d(TAG, "audio decoder is unexpectedly null");
-                }
+                Log.d(TAG, "audio decoder is unexpectedly null");
                 return;
             }
             audioCodec.start();
@@ -338,20 +337,14 @@ public class MediaCodecPlayer {
                     int outputBufferIndex = audioCodec.dequeueOutputBuffer(audioBufferInfo, TIMEOUT_US);
                     switch (outputBufferIndex) {
                         case MediaCodec.INFO_OUTPUT_FORMAT_CHANGED:
-                            if (VERBOSE) {
-                                Log.d(TAG, "INFO_OUTPUT_FORMAT_CHANGED");
-                            }
+                            Log.d(TAG, "INFO_OUTPUT_FORMAT_CHANGED");
                             break;
                         case MediaCodec.INFO_TRY_AGAIN_LATER:
-                            if (VERBOSE) {
-                                Log.d(TAG, "INFO_TRY_AGAIN_LATER");
-                            }
+                            Log.d(TAG, "INFO_TRY_AGAIN_LATER");
                             break;
                         case MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED:
                             outputBuffers = audioCodec.getOutputBuffers();
-                            if (VERBOSE) {
-                                Log.d(TAG, "INFO_OUTPUT_BUFFERS_CHANGED");
-                            }
+                            Log.d(TAG, "INFO_OUTPUT_BUFFERS_CHANGED");
                             break;
                         default:
                             ByteBuffer outputBuffer = outputBuffers[outputBufferIndex];
@@ -375,9 +368,7 @@ public class MediaCodecPlayer {
 
                     // 结尾了
                     if ((audioBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
-                        if (VERBOSE) {
-                            Log.d(TAG, "BUFFER_FLAG_END_OF_STREAM");
-                        }
+                        Log.d(TAG, "BUFFER_FLAG_END_OF_STREAM");
                         break;
                     }
                 }

@@ -34,6 +34,16 @@
         android:textColor="@color/white" />
 
     <Button
+        android:id="@+id/speed"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/button_bg"
+        android:text="倍速"
+        android:textColor="@color/white" />
+
+    <Button
         android:id="@+id/tv"
         android:layout_width="120dp"
         android:layout_height="40dp"

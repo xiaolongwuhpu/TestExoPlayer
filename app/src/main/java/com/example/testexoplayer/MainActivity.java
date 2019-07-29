@@ -15,6 +15,7 @@ import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
+import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 
@@ -31,13 +32,18 @@ public class MainActivity extends BaseActivity {
     SimpleExoPlayer player;
     PlayerView playView;
     MediaSource mediaSource, mediaSource2;
-    @BindView(R.id.media_codec)
-    Button exampleExoPlayer;
+
     @BindView(R.id.merge)
     Button merge;
     @BindView(R.id.tv)
     Button tv;
     ConcatenatingMediaSource concatenatedSource;
+    @BindView(R.id.exo_play)
+    PlayerView exoPlay;
+    @BindView(R.id.speed)
+    Button speed;
+    @BindView(R.id.media_codec)
+    Button mediaCodec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +68,11 @@ public class MainActivity extends BaseActivity {
 
         playView.setPlayer(player);
 
-        mediaSource2 = ConstantData.buildMediaSource(Uri.parse(ConstantData.MP4url), this);
+        mediaSource = ConstantData.buildMediaSource(Uri.parse(ConstantData.MP4url), this);
 //        mediaSource2 = ConstantData.buildOkHttpMediaSource(Uri.parse(ConstantData.wuxing_m3u8), this);
-//        LoopingMediaSource firstSourceTwice = new LoopingMediaSource(mediaSource, 1);
+        LoopingMediaSource loop = new LoopingMediaSource(mediaSource);
 //        concatenatedSource = new ConcatenatingMediaSource(mediaSource, mediaSource2);
-        player.prepare(mediaSource2);
+        player.prepare(loop);
         player.seekTo(currentPosition);
         player.addListener(listener);
     }
@@ -112,30 +118,6 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-
-    @OnClick({R.id.media_codec, R.id.merge, R.id.tv})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.media_codec:
-                ToNewPageUtil.intentToActivity(this, TestMediaCodec.class);
-                break;
-            case R.id.merge:
-                ToNewPageUtil.intentToActivity(this, TestMergeMediaSouce.class);
-                break;
-            case R.id.tv:
-                List<String> list = ConstantData.loadAssetData(this);
-                if (list.size() > 0) {
-                    Intent intent = new Intent(this, TestSimpleExoPlayer.class);
-                    intent.putExtra("position", 0);
-                    intent.putExtra("list", (Serializable) list);
-                    startActivity(intent);
-                } else {
-                    showToast("数据加载失败,请重试");
-                }
-                break;
-        }
-    }
-
     static long currentPosition = 0;
 
     @Override
@@ -159,5 +141,31 @@ public class MainActivity extends BaseActivity {
         player.stop();
         player.release();
         Log.d(TAG, "DESTROY");
+    }
+
+    @OnClick({R.id.media_codec, R.id.merge, R.id.speed, R.id.tv})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.media_codec:
+                ToNewPageUtil.intentToActivity(this, TestMediaCodec.class);
+                break;
+            case R.id.merge:
+                ToNewPageUtil.intentToActivity(this, TestMergeMediaSouce.class);
+                break;
+            case R.id.tv:
+                List<String> list = ConstantData.loadAssetData(this);
+                if (list.size() > 0) {
+                    Intent intent = new Intent(this, TestSimpleExoPlayer.class);
+                    intent.putExtra("position", 0);
+                    intent.putExtra("list", (Serializable) list);
+                    startActivity(intent);
+                } else {
+                    showToast("数据加载失败,请重试");
+                }
+                break;
+            case R.id.speed:
+                ToNewPageUtil.intentToActivity(this, TestPlaybackActivity.class);
+                break;
+        }
     }
 }

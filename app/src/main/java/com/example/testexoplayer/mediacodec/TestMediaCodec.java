@@ -1,10 +1,13 @@
 package com.example.testexoplayer.mediacodec;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.testexoplayer.BaseActivity;
@@ -26,6 +29,25 @@ public class TestMediaCodec extends BaseActivity {
     private String filePath;
     private MediaCodecPlayer player;
 
+    private static final int handleWhat = 0;
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == handleWhat) {
+                player.stop();
+                surfaceView.setMinimumWidth(msg.arg1);
+                surfaceView.setMinimumHeight(msg.arg2);
+                player.play();
+
+                ViewGroup.LayoutParams surfaceLayoutParams = surfaceView.getLayoutParams();
+                surfaceLayoutParams.width = msg.arg1;
+                surfaceLayoutParams.height = msg.arg2;
+
+                surfaceView.setLayoutParams(surfaceLayoutParams);
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +57,11 @@ public class TestMediaCodec extends BaseActivity {
         @Override
         public void videoAspect(int width, int height, float time) {
             Log.d(TAG, "width="+width+" , height="+height+" , tiem="+time);
+            Message message = new Message();
+            message.what = handleWhat;
+            message.arg1=width;
+            message.arg2=height;
+            handler.sendMessage(message);
         }
     };
 
