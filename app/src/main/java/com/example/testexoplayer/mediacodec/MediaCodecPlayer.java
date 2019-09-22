@@ -209,7 +209,7 @@ public class MediaCodecPlayer {
 //            videoCodec.setVideoScalingMode(MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
 
             MediaCodec.BufferInfo videoBufferInfo = new MediaCodec.BufferInfo();
-            ByteBuffer[] inputBuffers = videoCodec.getInputBuffers();
+            ByteBuffer[] inputBuffers = videoCodec.getInputBuffers();//
             boolean isVideoEOS = false;
 
             long startMs = System.currentTimeMillis();
@@ -245,7 +245,7 @@ public class MediaCodecPlayer {
                             break;
                     }
                     // 结尾
-                    if ((videoBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
+                    if (videoBufferInfo.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
                         Log.v(TAG, "buffer stream end");
                         break;
                     }

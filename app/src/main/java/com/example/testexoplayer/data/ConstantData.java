@@ -81,6 +81,7 @@ public class ConstantData {
                 context, userAgent);
         @C.ContentType int type = Util.inferContentType(uri);
         Log.d("ConstantData", "type=====" + type);
+
         switch (type) {
             case C.TYPE_DASH://0
                 return new DashMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
@@ -112,10 +113,11 @@ public class ConstantData {
 
 
 
-    public static List<String> loadAssetData(Context context) {
+    public static List<String> loadAssetData(Context context,String show) {
         List<String> tvList = new ArrayList<String>();
         try {
-            InputStream instream = context.getAssets().open("cctvs.txt");
+            InputStream instream = context.getAssets().open(show);
+//            InputStream instream = context.getAssets().open("cctvs.txt");
             if (instream != null) {
                 InputStreamReader inputreader = new InputStreamReader(instream);
                 BufferedReader buffreader = new BufferedReader(inputreader);

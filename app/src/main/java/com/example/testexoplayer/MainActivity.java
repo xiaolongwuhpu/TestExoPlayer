@@ -1,7 +1,6 @@
 package com.example.testexoplayer;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,14 +9,6 @@ import android.widget.Button;
 import com.example.testexoplayer.data.ConstantData;
 import com.example.testexoplayer.mediacodec.TestMediaCodec;
 import com.example.testexoplayer.util.ToNewPageUtil;
-import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
-import com.google.android.exoplayer2.source.LoopingMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.ui.PlayerView;
 
 import java.io.Serializable;
 import java.util.List;
@@ -25,25 +16,22 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL;
-
 
 public class MainActivity extends BaseActivity {
-    SimpleExoPlayer player;
-    PlayerView playView;
-    MediaSource mediaSource, mediaSource2;
 
     @BindView(R.id.merge)
     Button merge;
     @BindView(R.id.tv)
     Button tv;
-    ConcatenatingMediaSource concatenatedSource;
-    @BindView(R.id.exo_play)
-    PlayerView exoPlay;
+
     @BindView(R.id.speed)
     Button speed;
     @BindView(R.id.media_codec)
     Button mediaCodec;
+    @BindView(R.id.jap)
+    Button Jap;
+    @BindView(R.id.other)
+    Button other;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,93 +45,30 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        playView = findViewById(R.id.exo_play);
     }
 
     @Override
     protected void initData() {
-        playView.setResizeMode(RESIZE_MODE_FILL);
-//      player = ExoPlayerFactory.newSimpleInstance(this,new DefaultRenderersFactory(this),new DefaultTrackSelector(), new DefaultLoadControl());
-        player = ExoPlayerFactory.newSimpleInstance(this);
-
-        playView.setPlayer(player);
-
-        mediaSource = ConstantData.buildMediaSource(Uri.parse(ConstantData.MP4url), this);
-//        mediaSource2 = ConstantData.buildOkHttpMediaSource(Uri.parse(ConstantData.wuxing_m3u8), this);
-        LoopingMediaSource loop = new LoopingMediaSource(mediaSource);
-//        concatenatedSource = new ConcatenatingMediaSource(mediaSource, mediaSource2);
-        player.prepare(loop);
-        player.seekTo(currentPosition);
-        player.addListener(listener);
     }
-
-
-    private Player.DefaultEventListener listener = new Player.DefaultEventListener() {
-        @Override
-        public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-            // 视频播放状态
-            Log.d(TAG, "playbackState = " + playbackState + " playWhenReady = " + playWhenReady);
-            switch (playbackState) {
-                case Player.STATE_IDLE:
-                    //1 空闲
-                    break;
-                case Player.STATE_BUFFERING:
-                    //2 缓冲中
-                    break;
-                case Player.STATE_READY:
-                    //3 准备好
-                    break;
-                case Player.STATE_ENDED:
-                    //4 结束
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        @Override
-        public void onPlayerError(ExoPlaybackException error) {
-            // 报错
-            switch (error.type) {
-                case ExoPlaybackException.TYPE_SOURCE:
-                    // 加载资源时出错
-                    break;
-                case ExoPlaybackException.TYPE_RENDERER:
-                    // 渲染时出错
-                    break;
-                case ExoPlaybackException.TYPE_UNEXPECTED:
-                    // 意外的错误
-                    break;
-            }
-        }
-    };
-
-    static long currentPosition = 0;
 
     @Override
     protected void onResume() {
         super.onResume();
-        player.setPlayWhenReady(true);
         Log.d(TAG, "RESUME");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        player.setPlayWhenReady(false);
-        currentPosition = player.getCurrentPosition();
         Log.d(TAG, "PAUSE");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        player.stop();
-        player.release();
-        Log.d(TAG, "DESTROY");
     }
 
-    @OnClick({R.id.media_codec, R.id.merge, R.id.speed, R.id.tv})
+    @OnClick({R.id.media_codec, R.id.merge, R.id.speed, R.id.tv,R.id.jap,R.id.other})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.media_codec:
@@ -153,19 +78,29 @@ public class MainActivity extends BaseActivity {
                 ToNewPageUtil.intentToActivity(this, TestMergeMediaSouce.class);
                 break;
             case R.id.tv:
-                List<String> list = ConstantData.loadAssetData(this);
-                if (list.size() > 0) {
-                    Intent intent = new Intent(this, TestSimpleExoPlayer.class);
-                    intent.putExtra("position", 0);
-                    intent.putExtra("list", (Serializable) list);
-                    startActivity(intent);
-                } else {
-                    showToast("数据加载失败,请重试");
-                }
+                intentWithMoves("cctvs.txt");
+                break;
+            case R.id.jap:
+                intentWithMoves("new18.txt");
+                break;
+            case R.id.other:
+                intentWithMoves("others.txt");
                 break;
             case R.id.speed:
                 ToNewPageUtil.intentToActivity(this, TestPlaybackActivity.class);
                 break;
+        }
+    }
+
+    private void intentWithMoves(String move) {
+        List<String> list = ConstantData.loadAssetData(this, move);
+        if (list.size() > 0) {
+            Intent intent = new Intent(this, TestSimpleExoPlayer.class);
+            intent.putExtra("position", 0);
+            intent.putExtra("list", (Serializable) list);
+            startActivity(intent);
+        } else {
+            showToast("数据加载失败,请重试");
         }
     }
 }

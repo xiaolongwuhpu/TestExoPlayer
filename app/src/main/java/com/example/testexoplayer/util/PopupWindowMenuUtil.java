@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,32 +31,33 @@ public class PopupWindowMenuUtil {
      */
     private static PopupWindow popupWindow = null;
     static Context ctx;
+    private static int firstScrollingItemPositionVisible;///当前可见的第一个position
+    private static LinearLayoutManager layoutManager;
 
     /**
      * 显示popupWindow弹出框
      */
-    public static void showPopupWindows(final Context context, final View spinnerview, List<String> list, final OnListItemClickLitener mOnListItemClickLitener) {
+    public static void showPopupWindows(final Context context, final View spinnerview, List<String> list,final int position ,final OnListItemClickLitener mOnListItemClickLitener) {
         ctx = context;
         if (popupWindow != null) {
             if (popupWindow.isShowing()) {
-                popupWindow.dismiss();
-                popupWindow = null;
+                return;
+//                popupWindow.dismiss();
+//                popupWindow = null;
             }
         }
         //一个自定义的布局，作为显示的内容
-        View popupWindowView = LayoutInflater.from(context).inflate(R.layout.activity_test_tv_list, null);
+        View popupWindowView = LayoutInflater.from(context).inflate(R.layout.popup_recycler_tv_list, null);
 
         /**在初始化contentView的时候，强制绘制contentView，并且马上初始化contentView的尺寸。
          * 另外一个点需要注意：popwindow_layout.xml的根Layout必须为LinearLayout；如果为RelativeLayout的话，会导致程序崩溃。*/
         popupWindowView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        //用于获取单个列表项的高度【用于计算大于n个列表项的时候，列表的总高度值n * listitemView.getMeasuredHeight()】
-        View listitemView = LayoutInflater.from(context).inflate(R.layout.activity_test_tv_list, null);
-        listitemView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 
         //列表
         mRecyclerView = (RecyclerView) popupWindowView.findViewById(R.id.recycler);
-        initAdapter(list, mOnListItemClickLitener);
-        initRecyclerView();
+        initAdapter(list, position,mOnListItemClickLitener);
+        initRecyclerView(position);
+        addScrollListener(mRecyclerView);
 
         popupWindow = new PopupWindow(popupWindowView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -86,7 +88,23 @@ public class PopupWindowMenuUtil {
         int yPos = 0;//Y轴的偏移值相对某个控件的位置，有偏移;yoff表示相对y轴的偏移，正值是向下，负值是向上；
 
         popupWindow.showAtLocation(spinnerview, Gravity.LEFT,xPos, yPos);
-//        popupWindow.showAsDropDown(spinnerview, xPos, yPos);
+    }
+
+    private static void addScrollListener(RecyclerView mRecyclerView) {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                    firstScrollingItemPositionVisible = layoutManager.findFirstVisibleItemPosition();
+//                    System.out.println(lastItemPosition + "   " + firstScrollingItemPosition);
+//                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     /**
@@ -96,7 +114,7 @@ public class PopupWindowMenuUtil {
         if (popupWindow != null) {
             if (popupWindow.isShowing()) {
                 popupWindow.dismiss();
-                popupWindow = null;
+//                popupWindow = null;
             }
         }
     }
@@ -135,8 +153,9 @@ public class PopupWindowMenuUtil {
     static RecyclerView mRecyclerView;
     static MeAdapter mAdapter;
 
-    private static void initAdapter(List<String> tvList, OnListItemClickLitener mOnListItemClickLitener) {
-        mAdapter = new MeAdapter(R.layout.item_tv, tvList);
+    private static void initAdapter(List<String> tvList, int position, OnListItemClickLitener mOnListItemClickLitener) {
+        mAdapter = new MeAdapter(R.layout.item_tv, tvList,position);
+
         //开启动画效果
         mAdapter.openLoadAnimation();
         //设置动画效果
@@ -158,13 +177,16 @@ public class PopupWindowMenuUtil {
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 PopupWindowMenuUtil.closePopupWindows();//关闭列表对话框，注意会执行onDismiss()方法
                 mOnListItemClickLitener.onListItemClick(position);
+                Log.e(TAG, "onItemClick="+(position));
+//                count =position-firstScrollingItemPositionVisible ;
             }
         });
     }
 
-    private static void initRecyclerView() {
+    private static void initRecyclerView(int position) {
+        layoutManager = new LinearLayoutManager(ctx);
         //设置布局方式
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
+        mRecyclerView.setLayoutManager(layoutManager);
         //解决数据加载不完的问题
         mRecyclerView.setNestedScrollingEnabled(false);
         //当知道Adapter内Item的改变不会影响RecyclerView宽高的时候，可以设置为true让RecyclerView避免重新计算大小
@@ -175,5 +197,19 @@ public class PopupWindowMenuUtil {
         mRecyclerView.addItemDecoration(new DividerItemDecoration(ctx, DividerItemDecoration.HORIZONTAL));
         //设置适配器
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mAdapter.selectItem(position);
+                    mRecyclerView.scrollToPosition(position);
+                    Log.e(TAG, "mRecyclerView.post="+(position));
+//                    layoutManager.scrollToPositionWithOffset(position, 0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                }
+            }
+        });
     }
 }

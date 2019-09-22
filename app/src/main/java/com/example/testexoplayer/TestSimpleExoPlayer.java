@@ -7,12 +7,16 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.example.testexoplayer.data.ConstantData;
 import com.example.testexoplayer.util.PopupWindowMenuUtil;
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -30,7 +34,7 @@ public class TestSimpleExoPlayer extends BaseActivity {
 
     String url = ConstantData.MP4url;
     List<String> list;
-    int position;
+    int position=0;
 
 
     @Override
@@ -46,7 +50,7 @@ public class TestSimpleExoPlayer extends BaseActivity {
         }
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
@@ -85,8 +89,49 @@ public class TestSimpleExoPlayer extends BaseActivity {
                 return true;
             }
         });
-    }
+        player.addListener(listener);
 
+    }
+        private Player.DefaultEventListener listener = new Player.DefaultEventListener() {
+        @Override
+        public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+            // 视频播放状态
+            Log.d(TAG, "playbackState = " + playbackState + " playWhenReady = " + playWhenReady);
+            switch (playbackState) {
+                case Player.STATE_IDLE:
+                    //1 空闲
+                    break;
+                case Player.STATE_BUFFERING:
+                    //2 缓冲中
+                    break;
+                case Player.STATE_READY:
+                    //3 准备好
+                    break;
+                case Player.STATE_ENDED:
+                    //4 结束
+                    break;
+                default:
+                    break;
+            }
+        }
+
+            @Override
+        public void onPlayerError(ExoPlaybackException error) {
+                showToast("视频解析失败");
+            // 报错
+            switch (error.type) {
+                case ExoPlaybackException.TYPE_SOURCE:
+                    // 加载资源时出错
+                    break;
+                case ExoPlaybackException.TYPE_RENDERER:
+                    // 渲染时出错
+                    break;
+                case ExoPlaybackException.TYPE_UNEXPECTED:
+                    // 意外的错误
+                    break;
+            }
+        }
+    };
     boolean showing = false;
 
     private void mediaPlayerConfiguration() {
@@ -116,7 +161,7 @@ public class TestSimpleExoPlayer extends BaseActivity {
     }
 
     private void showMenu() {
-        PopupWindowMenuUtil.showPopupWindows(this, playView, list, new PopupWindowMenuUtil.OnListItemClickLitener() {
+        PopupWindowMenuUtil.showPopupWindows(this, playView, list, position,new PopupWindowMenuUtil.OnListItemClickLitener() {
             @Override
             public void onListItemClick(int mPosition) {
                 if (mPosition != -1) {

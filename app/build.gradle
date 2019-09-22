@@ -14,12 +14,36 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    buildTypes {
+    lintOptions {
+        abortOnError false
+    }
+    signingConfigs{
+        debug {
+            //启用代码混淆
+//            minifyEnabled true
+            //混淆规则配置文件
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //
+//            signingConfig signingConfigs.debug
+        }
+
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            storeFile file("/Users/wujing/androidwork/ExoPlayerTest/file/key")        //证书存放目录
+            storePassword "123456"                               //密码
+            keyAlias "longwu"                                                //别名
+            keyPassword "123456"                                //密码(就是设置证书那两个密码，建议都填一样的)
         }
     }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
+
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+
 }
 
 dependencies {

@@ -8,11 +8,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/exo_play"
-        android:layout_width="match_parent"
-        android:layout_height="200dp" />
-
     <Button
         android:layout_marginTop="15dp"
         android:id="@+id/media_codec"
@@ -30,7 +25,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
         android:background="@drawable/button_bg"
-        android:text="merge"
+
+        android:visibility="gone"
         android:textColor="@color/white" />
 
     <Button
@@ -41,6 +37,7 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/button_bg"
         android:text="倍速"
+
         android:textColor="@color/white" />
 
     <Button
@@ -52,4 +49,36 @@
         android:background="@drawable/button_bg"
         android:text="watch TV"
         android:textColor="@color/white" />
+    <Button
+        android:id="@+id/jap"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/button_bg"
+        android:text="18岁以下别进"
+        android:visibility="gone"
+        android:textColor="@color/white" />
+    <Button
+        android:id="@+id/other"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/button_bg"
+        android:text="国外电视"
+        android:visibility="gone"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/more"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/button_bg"
+        android:text="更多"
+        android:visibility="gone"
+        android:textColor="@color/white" />
+
 </LinearLayout>
